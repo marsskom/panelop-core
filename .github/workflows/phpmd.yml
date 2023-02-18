@@ -1,0 +1,25 @@
+name: "PHP MD"
+
+on:
+    push:
+        branches: [ master ]
+    pull_request:
+        branches: [ master ]
+
+jobs:
+    phpmd:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Setup PHP environment
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.1
+                  extensions: none, ctype, curl, date, dom, json, libxml, mbstring, pdo_mysql, phar, simplexml, soap, tokenizer, xml, xmlwriter, zlib, bcmath, intl
+                  coverage: none
+                  tools: phpmd
+
+            - name: Run PHPMD
+              run: phpmd ./src/ github phpmd.ruleset.xml --exclude 'tests/*,vendor/*,node_modules/*'
