@@ -1,0 +1,47 @@
+{
+    "name": "marsskom/panelop-core",
+    "description": "Panelop Core Module",
+    "keywords": ["Panelop", "Migration", "Library"],
+    "license": "MIT",
+    "type": "library",
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Panelop\\Core\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Andrii Prakapas",
+            "email": "marsskom@gmail.com"
+        }
+    ],
+    "scripts": {
+        "tests": "XDEBUG_MODE=coverage ./vendor/bin/phpunit",
+        "phpcs": "./vendor/bin/phpcs phpcs.xml",
+        "phpmd": "php -d display_errors=off ./vendor/bin/phpmd src text phpmd.ruleset.xml",
+        "phpstan": "./vendor/bin/phpstan --xdebug analyse src",
+        "psalm": "./vendor/bin/psalm src/"
+    },
+    "require": {
+        "php": "8.1.14"
+    },
+    "require-dev": {
+        "phpmd/phpmd": "^2.11",
+        "phpstan/phpstan": "^1.4",
+        "phpunit/phpunit": "^10.0.4",
+        "squizlabs/php_codesniffer": "^3.6",
+        "vimeo/psalm": "^5.1"
+    }
+}
