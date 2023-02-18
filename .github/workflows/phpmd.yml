@@ -22,4 +22,4 @@ jobs:
                   tools: phpmd
 
             - name: Run PHPMD
-              run: phpmd src/ github phpmd.ruleset.xml --exclude 'tests/*,vendor/*,node_modules/*'
+              run: phpmd ./src/ github phpmd.ruleset.xml --exclude 'tests/*,vendor/*,node_modules/*'
