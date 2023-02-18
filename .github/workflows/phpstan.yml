@@ -14,5 +14,5 @@ jobs:
             - uses: php-actions/composer@v6 # or alternative dependency management
             - uses: php-actions/phpstan@v3
               with:
-                  php_version: 8.1.14
+                  php_version: 8.1
                   path: src
