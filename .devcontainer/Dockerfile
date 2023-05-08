@@ -40,5 +40,3 @@ RUN docker-php-ext-enable xdebug
 
 # Gets and adds composer.
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-COPY composer.* /usr/src/panelop-core
-RUN composer install
