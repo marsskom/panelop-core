@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Pipeline;
+namespace Panelop\Core\Tests\Pipeline;
 
 use Panelop\Core\Pipeline\DefaultProcessor;
+use Panelop\Core\Pipeline\Interfaces\ProcessorInterface;
+use Panelop\Core\Tests\App;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -13,11 +15,11 @@ final class DefaultProcessorTest extends TestCase
 {
     public function testCalculation(): void
     {
-        $processor = new DefaultProcessor();
+        $processor = App::$container->get(ProcessorInterface::class);
 
         self::assertEquals(
             3,
-            $processor->proceed(
+            ($processor)(
                 177,
                 static fn(int $value): int => $value - 77,
                 static fn(int $value): float => $value / 20,

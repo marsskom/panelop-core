@@ -15,28 +15,25 @@ final class Pipeline implements PipelineInterface
     private array $callables;
 
     public function __construct(
-        private ?ProcessorInterface $processor = null,
-        callable                    ...$callables,
+        private readonly ProcessorInterface $processor,
+        callable                            ...$callables,
     ) {
-        $this->processor ??= new DefaultProcessor();
         $this->callables = $callables;
     }
 
-    public function pipe(callable $callable): PipelineInterface
+    public function pipe(callable ...$callables): PipelineInterface
     {
         $new = clone $this;
-        $new->callables[] = $callable;
+        $new->callables = [
+            ...$this->callables,
+            ...$callables,
+        ];
 
         return $new;
     }
 
-    public function proceed(mixed $payload = null): mixed
-    {
-        return $this->processor->proceed($payload, ...$this->callables);
-    }
-
     public function __invoke(mixed $payload = null): mixed
     {
-        return $this->proceed($payload);
+        return ($this->processor)($payload, ...$this->callables);
     }
 }
