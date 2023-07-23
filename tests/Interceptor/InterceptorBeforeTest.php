@@ -2,8 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Interceptor;
+namespace Panelop\Core\Tests\Interceptor;
 
+use Panelop\Core\Interceptor\Builders\InterceptorBuilder;
+use Panelop\Core\Interceptor\Factories\InvocationMethodFactory;
+use Panelop\Core\Interceptor\Interfaces\InterceptorBeforeInterface;
+use Panelop\Core\Interceptor\Interfaces\InvocationMethodInterface;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
@@ -12,28 +16,30 @@ final class InterceptorBeforeTest extends TestCase
 {
     public function testCallable(): void
     {
-        $sum = static function (int|float $first, int|float $second): int|float {
-            return $first + $second;
-        };
+        $sum = static fn (int|float $first, int|float $second): int|float => $first + $second;
 
         self::assertEquals(5, $sum(2, 3));
         self::assertEquals(5.9, $sum(2.2, 3.7));
 
-        $interceptorFactory = new InterceptorFactory();
-        $interceptorList = $interceptorFactory
-            ->cover($sum)
+        $interceptor = (new InterceptorBuilder())
             ->before(
-                new class implements InterceptorInterface {
-                    public function __invoke(SubjectMethodInterface $method): SubjectMethodInterface
+                new class () implements InterceptorBeforeInterface {
+                    public function __invoke(InvocationMethodInterface $invocationMethod): InvocationMethodInterface
                     {
-                        $method->first++;
+                        $parameter = $invocationMethod->getParameter('first');
+                        $newParameter = (new InvocationMethodFactory())
+                            ->overrideInvocationParameterValue($parameter, $parameter->getValue() + 1);
 
-                        return $method;
+                        $invocationMethod->setParameter($newParameter);
+
+                        return $invocationMethod;
                     }
                 }
-            );
+            )
+            ->on((new InvocationMethodFactory())->create($sum))
+            ->build();
 
-        self::assertEquals(6, $interceptorList->proceed(2, 3));
-        self::assertEquals(6.9, $interceptorList->proceed(2.2, 3.7));
+        self::assertEquals(6, $interceptor(2, 3));
+        self::assertEquals(6.9, $interceptor(2.2, 3.7));
     }
 }
