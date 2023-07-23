@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(PipelineBuilder::class)]
 #[CoversClass(DefaultProcessor::class)]
 #[CoversClass(Pipeline::class)]
-class PipelineBuilderTest extends TestCase
+final class PipelineBuilderTest extends TestCase
 {
     public function testBuilder(): void
     {
