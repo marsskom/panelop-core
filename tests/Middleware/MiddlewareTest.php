@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Middleware;
+namespace Panelop\Core\Tests\Middleware;
 
 use PHPUnit\Framework\TestCase;
 

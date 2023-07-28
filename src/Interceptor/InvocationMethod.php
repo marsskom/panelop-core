@@ -14,6 +14,8 @@ use ReflectionMethod;
 
 use function array_map;
 use function array_values;
+use function get_class;
+use function is_object;
 
 final class InvocationMethod implements InvocationMethodInterface
 {
@@ -98,7 +100,16 @@ final class InvocationMethod implements InvocationMethodInterface
             return $this->method->invokeArgs($arguments);
         }
 
-        return (new ReflectionMethod($this->method[0], $this->method[1]))
-            ->invokeArgs($this->method[0], $arguments);
+        $reflectionMethod = (new ReflectionMethod($this->method[0], $this->method[1]));
+        $result = $reflectionMethod->invokeArgs($this->method[0], $arguments);
+
+        if (
+            is_object($result)
+            && $reflectionMethod->getDeclaringClass()->getName() === get_class($result)
+        ) {
+            $this->method[0] = $result;
+        }
+
+        return $result;
     }
 }
