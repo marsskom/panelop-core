@@ -12,6 +12,7 @@ use Panelop\Core\Interceptor\InvocationMethod;
 use Panelop\Core\Interceptor\InvocationParameter;
 use ReflectionException;
 use ReflectionFunction;
+use ReflectionMethod;
 use ReflectionParameter;
 
 use function is_array;
@@ -29,15 +30,15 @@ final readonly class InvocationMethodFactory
      */
     public function create(array|callable $callable): InvocationMethodInterface
     {
-        $method = match (true) {
-            is_array($callable) => $callable,
+        $reflectionMethod = match (true) {
+            is_array($callable) => new ReflectionMethod($callable[0], $callable[1]),
             is_callable($callable) => new ReflectionFunction($callable),
             default => throw InvocationMethodCannotBeCreatedException::create($callable),
         };
 
         return new InvocationMethod(
-            $method,
-            ...$this->createInvocationParameterFromReflection(...$method->getParameters()),
+            is_array($callable) ? $callable : $reflectionMethod,
+            ...$this->createInvocationParameterFromReflection(...$reflectionMethod->getParameters()),
         );
     }
 
