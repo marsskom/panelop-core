@@ -12,7 +12,7 @@ use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
 
-use function array_map;
+use function array_filter;
 use function array_values;
 use function get_class;
 use function is_object;
@@ -25,6 +25,8 @@ final class InvocationMethod implements InvocationMethodInterface
      * @var InvocationParameterInterface[]
      */
     private array $parameters;
+
+    private bool $hasBeenCalled = false;
 
     public function __construct(
         array|ReflectionFunction     $method,
@@ -82,10 +84,29 @@ final class InvocationMethod implements InvocationMethodInterface
 
     public function getArguments(): array
     {
-        return array_map(
-            static fn (InvocationParameterInterface $invocationParameter): mixed => $invocationParameter->getValue(),
-            array_values((new ParameterSortHelper())->byPosition(...$this->parameters))
+        $activeParameters = array_values(
+            array_filter(
+                (new ParameterSortHelper())->byPosition(...$this->parameters),
+                static fn (InvocationParameterInterface $invocationParameter): bool => $invocationParameter->isActive(),
+            )
         );
+
+        $arguments = [];
+        foreach ($activeParameters as $parameter) {
+            /** @var InvocationParameterInterface $parameter */
+            if ($parameter->isVariadic()) {
+                $arguments = array_merge($arguments, $parameter->getValue());
+            } else {
+                $arguments[] = $parameter->getValue();
+            }
+        }
+
+        return $arguments;
+    }
+
+    public function hasBeenCalled(): bool
+    {
+        return $this->hasBeenCalled;
     }
 
     /**
@@ -96,6 +117,8 @@ final class InvocationMethod implements InvocationMethodInterface
      */
     public function proceed(mixed ...$arguments): mixed
     {
+        $this->hasBeenCalled = true;
+
         if ($this->method instanceof ReflectionFunction) {
             return $this->method->invokeArgs($arguments);
         }

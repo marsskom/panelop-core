@@ -48,6 +48,8 @@ final readonly class InvocationMethodFactory
             static fn (ReflectionParameter $parameter): InvocationParameter => new InvocationParameter(
                 $parameter->getPosition(),
                 $parameter->getName(),
+                $parameter->isVariadic(),
+                false,
                 null
             ),
             $parameters
@@ -56,11 +58,14 @@ final readonly class InvocationMethodFactory
 
     public function overrideInvocationParameterValue(
         InvocationParameterInterface $parameter,
+        bool                         $isActive,
         mixed                        $value
     ): InvocationParameterInterface {
         return new InvocationParameter(
             $parameter->getPosition(),
             $parameter->getName(),
+            $parameter->isVariadic(),
+            $isActive,
             $value
         );
     }

@@ -10,5 +10,9 @@ interface InvocationParameterInterface
 
     public function getName(): string;
 
+    public function isVariadic(): bool;
+
+    public function isActive(): bool;
+
     public function getValue(): mixed;
 }

@@ -41,7 +41,11 @@ final class InterceptorBeforeCallableTest extends TestCase
                     {
                         $parameter = $invocationMethod->getParameter('first');
                         $newParameter = (new InvocationMethodFactory())
-                            ->overrideInvocationParameterValue($parameter, $parameter->getValue() + 1);
+                            ->overrideInvocationParameterValue(
+                                $parameter,
+                                $parameter->isActive(),
+                                $parameter->getValue() + 1
+                            );
 
                         $invocationMethod->setParameter($newParameter);
 

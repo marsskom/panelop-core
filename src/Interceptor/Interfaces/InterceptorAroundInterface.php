@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Panelop\Core\Interceptor\Interfaces;
 
-interface InterceptorAroundInterface extends InterceptorInterface
+interface InterceptorAroundInterface
 {
+    public function __invoke(InvocationAroundResultInterface $invocationAroundResult): InvocationAroundResultInterface;
 }

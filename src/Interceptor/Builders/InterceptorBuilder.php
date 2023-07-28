@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Panelop\Core\Interceptor\Builders;
 
 use Panelop\Core\Interceptor\Callables\InvocationMethodArgumentsFillCallable;
+use Panelop\Core\Interceptor\Interfaces\InvocationAroundResultInterface;
 use Panelop\Core\Interceptor\Interfaces\InvocationInterceptorInterface;
 use Panelop\Core\Interceptor\Interfaces\InvocationMethodInterface;
+use Panelop\Core\Interceptor\InvocationAroundResult;
 use Panelop\Core\Interceptor\InvocationInterceptor;
 use Panelop\Core\Interceptor\Pipelines\InterceptorProcessor;
 use Panelop\Core\Pipeline\DefaultProcessor;
@@ -69,7 +71,7 @@ final class InterceptorBuilder
         );
         $pipeline = $this->addAroundInterceptors($pipeline);
 
-        return new InvocationInterceptor($pipeline->pipe(...$this->after));
+        return new InvocationInterceptor($this->addAfterInterceptors($pipeline));
     }
 
     private function getBeforeInterceptorsPipeline(): PipelineInterface
@@ -84,8 +86,11 @@ final class InterceptorBuilder
     {
         if (empty($this->around)) {
             return $pipeline->pipe(
-                fn (InvocationMethodInterface $invocationMethod): mixed => $this->invocationMethod->proceed(
-                    ...$invocationMethod->getArguments()
+                fn (InvocationMethodInterface $invocationMethod): mixed => new InvocationAroundResult(
+                    $invocationMethod,
+                    $this->invocationMethod->proceed(
+                        ...$invocationMethod->getArguments()
+                    )
                 )
             );
         }
@@ -94,9 +99,29 @@ final class InterceptorBuilder
 
         return $pipeline->pipe(
             static fn (InvocationMethodInterface $invocationMethod): mixed => $firstAroundMethod(
-                ...$invocationMethod->getArguments()
+                new InvocationAroundResult($invocationMethod, $invocationMethod->getArguments())
             ),
             ...$this->around
+        );
+    }
+
+    private function addAfterInterceptors(PipelineInterface $pipeline): PipelineInterface
+    {
+        if (empty($this->after)) {
+            return $pipeline->pipe(
+                static fn (
+                    InvocationAroundResultInterface $invocationAroundResult
+                ): mixed => $invocationAroundResult->getPayload()
+            );
+        }
+
+        $firstAfterMethod = array_shift($this->after);
+
+        return $pipeline->pipe(
+            static fn (InvocationAroundResultInterface $invocationAroundResult): mixed => $firstAfterMethod(
+                $invocationAroundResult->getPayload()
+            ),
+            ...$this->after
         );
     }
 }

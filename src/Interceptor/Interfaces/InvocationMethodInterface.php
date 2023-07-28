@@ -21,5 +21,7 @@ interface InvocationMethodInterface
 
     public function getArguments(): array;
 
+    public function hasBeenCalled(): bool;
+
     public function proceed(mixed ...$arguments): mixed;
 }
