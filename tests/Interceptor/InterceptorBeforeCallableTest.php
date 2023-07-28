@@ -16,6 +16,7 @@ use Panelop\Core\Tests\Classes\Interceptor\Before\ArrayOfMessBeforeWrapper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 
 use function count;
 
@@ -53,6 +54,38 @@ final class InterceptorBeforeCallableTest extends TestCase
 
         self::assertEquals(6, $interceptor(2, 3));
         self::assertEquals(6.9, $interceptor(2.2, 3.7));
+    }
+
+    public function testExceptionOnChangeParameterType(): void
+    {
+        $this->expectException(TypeError::class);
+
+        $sumInt = static fn (int $first, int $second): int => $first + $second;
+
+        self::assertEquals(5, $sumInt(2, 3));
+
+        $interceptor = (new InterceptorBuilder())
+            ->before(
+                new class () implements InterceptorBeforeInterface {
+                    public function __invoke(InvocationMethodInterface $invocationMethod): InvocationMethodInterface
+                    {
+                        $parameter = $invocationMethod->getParameter('first');
+                        $newParameter = (new InvocationMethodFactory())
+                            ->overrideInvocationParameterValue(
+                                $parameter,
+                                "We change parameter's value here"
+                            );
+
+                        $invocationMethod->setParameter($newParameter);
+
+                        return $invocationMethod;
+                    }
+                }
+            )
+            ->on((new InvocationMethodFactory())->create($sumInt))
+            ->build();
+
+        self::assertEquals(5, $interceptor(2, 3));
     }
 
     public static function simpleDataProvider(): iterable
