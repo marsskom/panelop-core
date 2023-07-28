@@ -15,6 +15,7 @@ use ReflectionMethod;
 use function array_filter;
 use function array_values;
 use function get_class;
+use function is_array;
 use function is_object;
 
 final class InvocationMethod implements InvocationMethodInterface
@@ -38,6 +39,10 @@ final class InvocationMethod implements InvocationMethodInterface
 
     public function getName(): string
     {
+        if (is_array($this->method)) {
+            return (new ReflectionMethod($this->method[0], $this->method[1]))->getName();
+        }
+
         return $this->method->getName();
     }
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Panelop\Core\Tests\Interceptor;
 
-use Interceptor\EmptyInterceptorTest;
 use Panelop\Core\Interceptor\Builders\InterceptorBuilder;
 use Panelop\Core\Interceptor\Factories\InvocationMethodFactory;
 use Panelop\Core\Interceptor\Interfaces\InterceptorAroundInterface;
@@ -12,11 +11,17 @@ use Panelop\Core\Interceptor\Interfaces\InvocationAroundResultInterface;
 use Panelop\Core\Interceptor\InvocationAroundResult;
 use Panelop\Core\Interceptor\InvocationMethod;
 use Panelop\Core\Interceptor\InvocationParameter;
+use Panelop\Core\Tests\App;
+use Panelop\Core\Tests\Classes\Interceptor\Around\ArrayOfMessAroundWrapper;
+use Panelop\Core\Tests\Classes\Interceptor\Around\ParametersLogInterceptor;
+use Panelop\Core\Tests\DataProviders\Interceptor\InterceptorAroundDataProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\TestCase;
 
 use function array_values;
+use function call_user_func_array;
+use function is_object;
 
 #[CoversClass(InterceptorAroundInterface::class)]
 #[CoversClass(InvocationMethodFactory::class)]
@@ -96,5 +101,28 @@ final class InterceptorAroundCallableTest extends TestCase
         }
     }
 
+    #[DataProviderExternal(InterceptorAroundDataProvider::class, 'dataProvider')]
+    public function testLogOnMess(
+        array $commands,
+        array $logDataExpected,
+    ): void {
+        /**
+         * @var ParametersLogInterceptor $logger
+         * @var ArrayOfMessAroundWrapper $mess
+         */
+        // Inits logger for saving data here. It works, since `$container->get` returns same instance if it exists.
+        $logger = App::$container->get(ParametersLogInterceptor::class);
+        $logger->logs = [];
+        $mess = App::$container->get(ArrayOfMessAroundWrapper::class);
 
+        foreach ($commands as [0 => $method, 1 => $arguments]) {
+            $result = call_user_func_array([$mess, $method], $arguments);
+
+            if (is_object($result)) {
+                $mess = $result;
+            }
+        }
+
+        self::assertSame($logDataExpected, $logger->logs);
+    }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Interceptor;
+namespace Panelop\Core\Tests\Interceptor;
 
 use Panelop\Core\Interceptor\Builders\InterceptorBuilder;
 use Panelop\Core\Interceptor\Factories\InvocationMethodFactory;
