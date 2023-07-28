@@ -86,7 +86,7 @@ final class InterceptorBuilder
     {
         if (empty($this->around)) {
             return $pipeline->pipe(
-                fn (InvocationMethodInterface $invocationMethod): mixed => new InvocationAroundResult(
+                fn(InvocationMethodInterface $invocationMethod): mixed => new InvocationAroundResult(
                     $invocationMethod,
                     $this->invocationMethod->proceed(
                         ...$invocationMethod->getArguments()
@@ -98,7 +98,7 @@ final class InterceptorBuilder
         $firstAroundMethod = array_shift($this->around);
 
         return $pipeline->pipe(
-            static fn (InvocationMethodInterface $invocationMethod): mixed => $firstAroundMethod(
+            static fn(InvocationMethodInterface $invocationMethod): mixed => $firstAroundMethod(
                 new InvocationAroundResult($invocationMethod, $invocationMethod->getArguments())
             ),
             ...$this->around
@@ -109,18 +109,16 @@ final class InterceptorBuilder
     {
         if (empty($this->after)) {
             return $pipeline->pipe(
-                static fn (
+                static fn(
                     InvocationAroundResultInterface $invocationAroundResult
                 ): mixed => $invocationAroundResult->getPayload()
             );
         }
 
-        $firstAfterMethod = array_shift($this->after);
-
         return $pipeline->pipe(
-            static fn (InvocationAroundResultInterface $invocationAroundResult): mixed => $firstAfterMethod(
-                $invocationAroundResult->getPayload()
-            ),
+            static fn(
+                InvocationAroundResultInterface $invocationAroundResult
+            ): mixed => $invocationAroundResult->getPayload(),
             ...$this->after
         );
     }

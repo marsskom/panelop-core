@@ -24,14 +24,14 @@ final class CustomerEntity
         return $this->age;
     }
 
-    public function setAllowToDrinkAlcohol(): self
+    public function setIsAllowedToDrink(): self
     {
         $this->isAllowedToDrink = true;
 
         return $this;
     }
 
-    public function isIsAllowToDrink(): bool
+    public function isAllowedToDrink(): bool
     {
         return $this->isAllowedToDrink;
     }

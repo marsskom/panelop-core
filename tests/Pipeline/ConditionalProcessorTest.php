@@ -64,10 +64,10 @@ final class ConditionalProcessorTest extends TestCase
         $customerEntity = $processor(
             $age,
             static fn (int $age): CustomerEntity => (new CustomerEntity())->setAge($age),
-            static fn (CustomerEntity $customerEntity): CustomerEntity => $customerEntity->setAllowToDrinkAlcohol(),
+            static fn (CustomerEntity $customerEntity): CustomerEntity => $customerEntity->setIsAllowedToDrink(),
         );
 
-        self::assertSame($isAllowToDrink, $customerEntity->isIsAllowToDrink());
+        self::assertSame($isAllowToDrink, $customerEntity->isAllowedToDrink());
     }
 
     /**
@@ -108,10 +108,10 @@ final class ConditionalProcessorTest extends TestCase
         $customerEntity = $processor(
             $age,
             static fn (int $age): CustomerEntity => (new CustomerEntity())->setAge($age),
-            static fn (CustomerEntity $customerEntity): CustomerEntity => $customerEntity->setAllowToDrinkAlcohol(),
+            static fn (CustomerEntity $customerEntity): CustomerEntity => $customerEntity->setIsAllowedToDrink(),
         );
 
-        self::assertTrue($customerEntity->isIsAllowToDrink());
+        self::assertTrue($customerEntity->isAllowedToDrink());
     }
 
     public function testComplexPipelinesCallingOrder(): void
