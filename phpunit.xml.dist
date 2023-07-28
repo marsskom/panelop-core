@@ -9,7 +9,8 @@
          beStrictAboutCoverageMetadata="false"
          beStrictAboutOutputDuringTests="true"
          failOnRisky="true"
-         failOnWarning="true">
+         failOnWarning="true"
+         testdox="true">
     <php>
         <ini name="error_reporting" value="-1"/>
         <ini name="xdebug.mode" value="coverage"/>
