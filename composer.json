@@ -32,7 +32,8 @@
         }
     ],
     "scripts": {
-        "tests": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html ./runtime/reports/html",
+        "tests": "XDEBUG_MODE=coverage ./vendor/bin/phpunit ./tests/Unit --coverage-html ./runtime/reports/html",
+        "bench": "XDEBUG_MODE=off php -n -dxdebug.mode=off ./vendor/bin/phpbench run tests/Benchmark --store --report=aggregate --progress=dots",
         "phpcs": "./vendor/bin/phpcs phpcs.xml",
         "phpmd": "php -d display_errors=off ./vendor/bin/phpmd src text phpmd.ruleset.xml",
         "phpstan": "./vendor/bin/phpstan --xdebug analyse src",
@@ -45,6 +46,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.22",
         "php-di/php-di": "^7.0",
+        "phpbench/phpbench": "^1.2",
         "phpmd/phpmd": "^2.11",
         "phpstan/phpstan": "^1.4",
         "phpunit/phpunit": "^10.0.4",

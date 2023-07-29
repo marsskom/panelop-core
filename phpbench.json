@@ -1,0 +1,5 @@
+{
+    "$schema":"./vendor/phpbench/phpbench/phpbench.schema.json",
+    "runner.bootstrap": "./tests/bootstrap.php",
+    "storage.xml_storage_path": "./runtime/storage/phpbench"
+}

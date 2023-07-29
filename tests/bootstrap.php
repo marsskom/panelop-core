@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use DI\ContainerBuilder;
 use Panelop\Core\Tests\App;
-use Panelop\Core\Tests\DI\InterceptorContainer;
+use Panelop\Core\Tests\Unit\DI\InterceptorContainer;
 
 define('PROJECT_ROOT', dirname(__DIR__));
 
