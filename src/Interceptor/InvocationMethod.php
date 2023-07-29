@@ -51,9 +51,6 @@ final class InvocationMethod implements InvocationMethodInterface
         return $this->parameters;
     }
 
-    /**
-     * @throws InvocationParameterNotFoundException
-     */
     public function getParameter(string $name): InvocationParameterInterface
     {
         foreach ($this->parameters as $parameter) {
@@ -92,7 +89,7 @@ final class InvocationMethod implements InvocationMethodInterface
         $activeParameters = array_values(
             array_filter(
                 (new ParameterSortHelper())->byPosition(...$this->parameters),
-                static fn (InvocationParameterInterface $invocationParameter): bool => $invocationParameter->isActive(),
+                static fn(InvocationParameterInterface $invocationParameter): bool => $invocationParameter->isActive(),
             )
         );
 
