@@ -1,9 +1,8 @@
-FROM php:8.1-cli
+FROM php:8.2-cli
 
 COPY . /usr/src/panelop-core
 
 WORKDIR /usr/src/panelop-core
-
 
 # Set timezone because it will appear like interactive mode during running.
 ENV TZ=Europe/Kiev

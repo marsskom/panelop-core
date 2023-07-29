@@ -1,7 +1,11 @@
 {
     "name": "marsskom/panelop-core",
     "description": "Panelop Core Module",
-    "keywords": ["Panelop", "Migration", "Library"],
+    "keywords": [
+        "Panelop",
+        "Migration",
+        "Library"
+    ],
     "license": "MIT",
     "type": "library",
     "config": {
@@ -17,9 +21,9 @@
         }
     },
     "autoload-dev": {
-        "classmap": [
-            "tests/"
-        ]
+        "psr-4": {
+            "Panelop\\Core\\Tests\\": "tests/"
+        }
     },
     "authors": [
         {
@@ -28,16 +32,21 @@
         }
     ],
     "scripts": {
-        "tests": "XDEBUG_MODE=coverage ./vendor/bin/phpunit",
+        "tests": "XDEBUG_MODE=coverage ./vendor/bin/phpunit ./tests/Unit --coverage-html ./runtime/reports/html",
+        "bench": "XDEBUG_MODE=off php -n -dxdebug.mode=off ./vendor/bin/phpbench run tests/Benchmark --store --report=aggregate --progress=dots",
         "phpcs": "./vendor/bin/phpcs phpcs.xml",
         "phpmd": "php -d display_errors=off ./vendor/bin/phpmd src text phpmd.ruleset.xml",
         "phpstan": "./vendor/bin/phpstan --xdebug analyse src",
         "psalm": "./vendor/bin/psalm src/"
     },
     "require": {
-        "php": "^8.1"
+        "php": "~8.2.8",
+        "ext-json": "~8.2.8"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.22",
+        "php-di/php-di": "^7.0",
+        "phpbench/phpbench": "^1.2",
         "phpmd/phpmd": "^2.11",
         "phpstan/phpstan": "^1.4",
         "phpunit/phpunit": "^10.0.4",
