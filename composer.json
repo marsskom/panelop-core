@@ -32,7 +32,7 @@
         }
     ],
     "scripts": {
-        "tests": "XDEBUG_MODE=coverage ./vendor/bin/phpunit",
+        "tests": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html ./runtime/reports/html",
         "phpcs": "./vendor/bin/phpcs phpcs.xml",
         "phpmd": "php -d display_errors=off ./vendor/bin/phpmd src text phpmd.ruleset.xml",
         "phpstan": "./vendor/bin/phpstan --xdebug analyse src",

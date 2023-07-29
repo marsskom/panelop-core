@@ -23,11 +23,11 @@
     </testsuites>
     <coverage>
         <report>
-            <clover outputFile="./reports/coverage_clover.xml"/>
+            <clover outputFile="./runtime/reports/clover/coverage_clover.xml"/>
         </report>
     </coverage>
     <logging>
-        <junit outputFile="reports/junit.xml"/>
+        <junit outputFile="./runtime/reports/junit.xml"/>
     </logging>
     <source>
         <include>
